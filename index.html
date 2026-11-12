@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Logica delle proposizioni · Implicazione, condizione necessaria e sufficiente</title>
+
+<script>
+  // No flash of wrong theme: set data-theme before first paint.
+  (function () {
+    try {
+      var t = localStorage.getItem('logica-theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+
+<style>
+:root{
+  --blue-900:#12314f;
+  --blue-700:#1d4e89;
+  --blue-500:#3b7dc4;
+  --blue-100:#e7f0fa;
+  --amber-600:#c9752a;
+  --amber-100:#faf0e3;
+  --ink:#1f2933;
+  --paper:#faf9f6;
+  --line:#dfe3e8;
+
+  --masthead:#12314f;       /* own token: stays deep navy in both themes */
+  --masthead-ink:#f3f6fb;
+
+  --card:#ffffff;
+  --card-soft:#f4f2ec;
+  --muted:#5a6572;
+  --shadow:0 1px 2px rgba(18,49,79,.06), 0 6px 18px rgba(18,49,79,.06);
+
+  --true:#1d4e89;           /* V / correct  -> blue */
+  --false:#c9752a;          /* F / incorrect -> amber */
+  --grid:#d7dce2;
+
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --blue-900:#bcd4ef;
+    --blue-700:#6ea8e0;
+    --blue-500:#8fc0f0;
+    --blue-100:#17273a;
+    --amber-600:#e3984f;
+    --amber-100:#2e2316;
+    --ink:#e8ecf1;
+    --paper:#10151c;
+    --line:#2a3340;
+
+    --card:#161c25;
+    --card-soft:#1b222d;
+    --muted:#9aa6b4;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
+
+    --true:#6ea8e0;
+    --false:#e3984f;
+    --grid:#33404f;
+  }
+}
+:root[data-theme="dark"]{
+  --blue-900:#bcd4ef;
+  --blue-700:#6ea8e0;
+  --blue-500:#8fc0f0;
+  --blue-100:#17273a;
+  --amber-600:#e3984f;
+  --amber-100:#2e2316;
+  --ink:#e8ecf1;
+  --paper:#10151c;
+  --line:#2a3340;
+
+  --card:#161c25;
+  --card-soft:#1b222d;
+  --muted:#9aa6b4;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.35);
+
+  --true:#6ea8e0;
+  --false:#e3984f;
+  --grid:#33404f;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.6;
+  font-size:17px;
+}
+h1,h2,h3{font-family:var(--serif);color:var(--blue-900);font-weight:600;line-height:1.25}
+h2{font-size:1.5rem;margin:0 0 .5rem}
+h3{font-size:1.15rem;margin:1.4rem 0 .4rem}
+p{margin:.6rem 0}
+a{color:var(--blue-700)}
+code,.mono{font-family:var(--mono)}
+
+.masthead{
+  background:var(--masthead);
+  color:var(--masthead-ink);
+  padding:1.3rem 1rem 1.1rem;
+}
+.masthead-inner{max-width:900px;margin:0 auto;display:flex;align-items:flex-start;gap:1rem;justify-content:space-between}
+.masthead h1{color:var(--masthead-ink);margin:0;font-size:1.5rem}
+.masthead .sub{color:#c3d3e6;font-size:.95rem;margin:.3rem 0 0;max-width:62ch}
+.kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:#8fb3d8;margin:0 0 .35rem}
+
+.theme-toggle{
+  flex:0 0 auto;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.22);
+  color:var(--masthead-ink);
+  width:42px;height:42px;border-radius:10px;
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.theme-toggle:hover{background:rgba(255,255,255,.16)}
+.theme-toggle svg{width:20px;height:20px}
+.theme-toggle .moon{display:none}
+:root[data-theme="dark"] .theme-toggle .sun{display:none}
+:root[data-theme="dark"] .theme-toggle .moon{display:block}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .theme-toggle .sun{display:none}
+  :root:not([data-theme="light"]) .theme-toggle .moon{display:block}
+}
+
+.wrap{max-width:900px;margin:0 auto;padding:0 1rem 4rem}
+
+/* Tabs: plain in-flow bar, no sticky */
+.tabs{
+  display:flex;flex-wrap:wrap;gap:.4rem;
+  margin:1.1rem 0 1.4rem;
+  border-bottom:2px solid var(--line);
+  padding-bottom:.1rem;
+}
+.tab{
+  font-family:var(--mono);font-size:.82rem;letter-spacing:.03em;
+  background:transparent;border:0;color:var(--muted);
+  padding:.6rem .85rem;border-radius:8px 8px 0 0;cursor:pointer;
+  border-bottom:3px solid transparent;margin-bottom:-2px;
+}
+.tab:hover{color:var(--blue-700);background:var(--card-soft)}
+.tab[aria-selected="true"]{color:var(--blue-700);border-bottom-color:var(--blue-700);font-weight:600}
+
+.panel{display:none;animation:fade .25s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:1.1rem 1.2rem;margin:1rem 0;box-shadow:var(--shadow);
+}
+.card-soft{background:var(--card-soft);border-color:transparent}
+.note{border-left:4px solid var(--blue-500);padding:.2rem 0 .2rem 1rem;margin:1rem 0;color:var(--ink)}
+.note.warn{border-left-color:var(--amber-600)}
+.lead{font-size:1.05rem;color:var(--ink)}
+
+.badge{display:inline-block;font-family:var(--mono);font-size:.72rem;padding:.12rem .5rem;border-radius:999px;background:var(--blue-100);color:var(--blue-700);border:1px solid var(--line)}
+.badge.suff{background:var(--blue-100);color:var(--true)}
+.badge.nec{background:var(--amber-100);color:var(--false)}
+
+/* Truth tables */
+table.tt{border-collapse:collapse;width:100%;margin:.8rem 0;font-family:var(--mono);font-size:.9rem}
+table.tt th,table.tt td{border:1px solid var(--line);padding:.42rem .5rem;text-align:center}
+table.tt th{background:var(--card-soft);color:var(--blue-900);font-weight:600}
+table.tt td.v{color:var(--true);font-weight:600}
+table.tt td.f{color:var(--false);font-weight:600}
+table.tt .op{background:var(--blue-100)}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.inline-def{display:grid;grid-template-columns:auto 1fr;gap:.3rem 1rem;align-items:baseline;margin:.6rem 0}
+.inline-def dt{font-family:var(--mono);color:var(--blue-700);font-weight:600}
+.inline-def dd{margin:0}
+
+/* Simulation */
+.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:680px){.sim-grid{grid-template-columns:1fr}}
+.toggle-row{display:flex;align-items:center;gap:.6rem;margin:.5rem 0;flex-wrap:wrap}
+.toggle-row .lbl{font-family:var(--mono);min-width:2.2rem;font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{
+  font-family:var(--mono);font-weight:600;border:0;background:var(--card);
+  color:var(--muted);padding:.5rem 1.1rem;cursor:pointer;font-size:.95rem;
+}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--blue-700);color:#fff}
+.seg.amber button[aria-pressed="true"]{background:var(--amber-600);color:#fff}
+
+.result-list{list-style:none;margin:.4rem 0 0;padding:0}
+.result-list li{
+  display:flex;justify-content:space-between;align-items:center;gap:.6rem;
+  padding:.45rem .2rem;border-bottom:1px dashed var(--line);font-size:.95rem;
+}
+.result-list li:last-child{border-bottom:0}
+.result-list .expr{font-family:var(--mono)}
+.val{font-family:var(--mono);font-weight:600;padding:.1rem .55rem;border-radius:7px;min-width:2.3rem;text-align:center}
+.val.v{color:#fff;background:var(--true)}
+.val.f{color:#fff;background:var(--false)}
+
+.reason{background:var(--blue-100);border-radius:10px;padding:.7rem .9rem;margin-top:.6rem;font-size:.95rem}
+:root[data-theme="dark"] .reason{background:var(--blue-100)}
+
+svg.venn{width:100%;height:auto;display:block;background:var(--card);border-radius:10px}
+.example-select{width:100%;padding:.55rem .6rem;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-family:var(--sans);font-size:.95rem}
+
+/* Practice */
+.exercise{margin:1.1rem 0}
+.exercise .q{font-size:1.02rem;margin-bottom:.5rem}
+.ans-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+input.answer{
+  font-family:var(--mono);font-size:1rem;padding:.5rem .6rem;border-radius:9px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);width:min(220px,60vw);
+}
+input.answer:focus{outline:3px solid var(--blue-500);outline-offset:1px}
+button.btn{
+  font-family:var(--sans);font-weight:600;font-size:.92rem;cursor:pointer;
+  border-radius:9px;padding:.55rem 1rem;border:1px solid transparent;
+}
+button.btn.primary{background:var(--blue-700);color:#fff}
+button.btn.primary:hover{background:var(--blue-900)}
+button.btn.ghost{background:transparent;color:var(--blue-700);border-color:var(--line)}
+button.btn.ghost:hover{background:var(--card-soft)}
+button.btn:focus-visible,.tab:focus-visible,.seg button:focus-visible,.theme-toggle:focus-visible,.example-select:focus-visible,.quiz-opt:focus-visible{outline:3px solid var(--blue-500);outline-offset:2px}
+.feedback{margin-top:.6rem;font-size:.95rem;display:none;padding:.55rem .75rem;border-radius:9px}
+.feedback.show{display:block}
+.feedback.ok{background:var(--blue-100);color:var(--true)}
+.feedback.no{background:var(--amber-100);color:var(--false)}
+.feedback .ico{font-weight:700;margin-right:.35rem}
+.hint{margin-top:.5rem;font-size:.92rem;color:var(--muted);display:none}
+.hint.show{display:block}
+
+/* Quiz */
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:.82rem;color:var(--muted);margin-bottom:.6rem}
+.quiz-q{font-size:1.08rem;margin:.3rem 0 .9rem}
+.quiz-opts{display:grid;gap:.55rem}
+.quiz-opt{
+  text-align:left;font-family:var(--sans);font-size:.98rem;cursor:pointer;
+  background:var(--card);border:1px solid var(--line);border-radius:11px;
+  padding:.7rem .85rem;color:var(--ink);display:flex;gap:.65rem;align-items:flex-start;
+}
+.quiz-opt:hover:not(:disabled){border-color:var(--blue-500);background:var(--card-soft)}
+.quiz-opt .mk{font-family:var(--mono);font-weight:600;color:var(--muted);flex:0 0 auto}
+.quiz-opt.correct{border-color:var(--true);background:var(--blue-100)}
+.quiz-opt.correct .mk{color:var(--true)}
+.quiz-opt.wrong{border-color:var(--false);background:var(--amber-100)}
+.quiz-opt.wrong .mk{color:var(--false)}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:.8rem;padding:.6rem .8rem;border-radius:10px;background:var(--card-soft);font-size:.94rem;display:none}
+.quiz-exp.show{display:block}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;gap:.5rem}
+.quiz-done{text-align:center;padding:1.4rem 0}
+.quiz-done .score{font-family:var(--serif);font-size:2.4rem;color:var(--blue-700)}
+.icon-ok::before{content:"\2713"}
+.icon-no::before{content:"\2715"}
+
+.footer{color:var(--muted);font-size:.85rem;text-align:center;margin-top:2.5rem;font-family:var(--mono)}
+.small{font-size:.85rem;color:var(--muted)}
+.kbd{font-family:var(--mono);background:var(--card-soft);border:1px solid var(--line);border-radius:5px;padding:.05rem .35rem;font-size:.82em}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <p class="kicker">Logica · Biennio liceo scientifico</p>
+      <h1>Proposizioni e implicazione</h1>
+      <p class="sub">Operazioni logiche elementari, tavole di verità e il cuore del ragionamento matematico: la condizione <strong>necessaria</strong> e <strong>sufficiente</strong>.</p>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambia tema chiaro/scuro" title="Tema chiaro/scuro">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.3A8.2 8.2 0 1 1 9.7 3.5a6.4 6.4 0 0 0 10.8 10.8z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" role="tablist" aria-label="Sezioni della lezione">
+    <button class="tab" role="tab" id="tab-teoria"  aria-controls="p-teoria"  aria-selected="true">Teoria</button>
+    <button class="tab" role="tab" id="tab-sim"     aria-controls="p-sim"     aria-selected="false">Simulazione</button>
+    <button class="tab" role="tab" id="tab-pratica" aria-controls="p-pratica" aria-selected="false">Pratica interattiva</button>
+    <button class="tab" role="tab" id="tab-quiz"    aria-controls="p-quiz"    aria-selected="false">Quiz</button>
+  </nav>
+
+  <!-- ================= TEORIA ================= -->
+  <section class="panel active" id="p-teoria" role="tabpanel" aria-labelledby="tab-teoria">
+
+    <h2>1. Che cos'è una proposizione</h2>
+    <p class="lead">In logica una <strong>proposizione</strong> (o enunciato) è una frase dichiarativa di cui si può dire, senza ambiguità, se è <strong>vera</strong> (V) oppure <strong>falsa</strong> (F) — e una sola delle due.</p>
+    <div class="card card-soft">
+      <p><strong>Sono proposizioni:</strong> «7 è un numero primo» (V), «\(3>5\)» (F), «Roma è in Francia» (F).</p>
+      <p><strong>Non</strong> sono proposizioni: «Che ore sono?» (domanda), «Chiudi la porta» (comando), «\(x+1=4\)» (dipende da \(x\): è un <em>predicato</em>, non una proposizione finché \(x\) non è fissato), «Questa frase è bella» (giudizio soggettivo).</p>
+    </div>
+    <div class="note">
+      Due principi reggono tutto: il <strong>principio di non contraddizione</strong> (una proposizione non può essere vera e falsa insieme) e il <strong>principio del terzo escluso</strong> (è vera oppure falsa, non c'è una terza via).
+    </div>
+    <p>Indichiamo le proposizioni con lettere minuscole \(p,\;q,\;r,\dots\) Una proposizione che non si può scomporre si dice <strong>atomica</strong>; combinando più proposizioni con i <em>connettivi</em> si ottengono proposizioni <strong>composte</strong>.</p>
+
+    <h2>2. Le operazioni logiche (connettivi)</h2>
+    <p>Il valore di verità di una proposizione composta dipende <em>solo</em> dai valori di verità delle proposizioni componenti. Lo descriviamo con una <strong>tavola di verità</strong>.</p>
+
+    <h3>Negazione — <span class="mono">\(\lnot p\)</span> (non p)</h3>
+    <p>Inverte il valore di verità.</p>
+    <div class="scroll-x"><table class="tt">
+      <tr><th>\(p\)</th><th class="op">\(\lnot p\)</th></tr>
+      <tr><td class="v">V</td><td class="op f">F</td></tr>
+      <tr><td class="f">F</td><td class="op v">V</td></tr>
+    </table></div>
+
+    <h3>Congiunzione — <span class="mono">\(p \land q\)</span> (p e q)</h3>
+    <p>Vera <strong>solo</strong> quando sono vere entrambe.</p>
+    <h3>Disgiunzione inclusiva — <span class="mono">\(p \lor q\)</span> (p o q)</h3>
+    <p>Vera quando è vera <strong>almeno una</strong> delle due (anche tutte e due). È il «vel» latino.</p>
+    <h3>Disgiunzione esclusiva — <span class="mono">\(p \veebar q\)</span> (o p o q)</h3>
+    <p>Vera quando è vera <strong>esattamente una</strong> delle due. È l'«aut… aut».</p>
+
+    <div class="scroll-x"><table class="tt">
+      <tr><th>\(p\)</th><th>\(q\)</th><th class="op">\(p\land q\)</th><th class="op">\(p\lor q\)</th><th class="op">\(p\veebar q\)</th></tr>
+      <tr><td class="v">V</td><td class="v">V</td><td class="op v">V</td><td class="op v">V</td><td class="op f">F</td></tr>
+      <tr><td class="v">V</td><td class="f">F</td><td class="op f">F</td><td class="op v">V</td><td class="op v">V</td></tr>
+      <tr><td class="f">F</td><td class="v">V</td><td class="op f">F</td><td class="op v">V</td><td class="op v">V</td></tr>
+      <tr><td class="f">F</td><td class="f">F</td><td class="op f">F</td><td class="op f">F</td><td class="op f">F</td></tr>
+    </table></div>
+
+    <h2>3. L'implicazione <span class="mono">\(p \rightarrow q\)</span></h2>
+    <p class="lead">Si legge «<strong>se p, allora q</strong>» (oppure «p implica q»). Qui \(p\) è l'<strong>ipotesi</strong> (o antecedente) e \(q\) è la <strong>tesi</strong> (o conseguente).</p>
+    <div class="note warn">
+      Regola da memorizzare: <strong>\(p\rightarrow q\) è falsa in un solo caso</strong>, quando l'ipotesi è vera ma la tesi è falsa (\(p\) V, \(q\) F). In tutti gli altri casi è vera.
+    </div>
+    <div class="scroll-x"><table class="tt">
+      <tr><th>\(p\)</th><th>\(q\)</th><th class="op">\(p\rightarrow q\)</th><th class="op">\(p\leftrightarrow q\)</th></tr>
+      <tr><td class="v">V</td><td class="v">V</td><td class="op v">V</td><td class="op v">V</td></tr>
+      <tr><td class="v">V</td><td class="f">F</td><td class="op f">F</td><td class="op f">F</td></tr>
+      <tr><td class="f">F</td><td class="v">V</td><td class="op v">V</td><td class="op f">F</td></tr>
+      <tr><td class="f">F</td><td class="f">F</td><td class="op v">V</td><td class="op v">V</td></tr>
+    </table></div>
+    <p>Quando l'ipotesi è falsa, l'implicazione è <strong>sempre vera</strong> («vero a vuoto»): la promessa «se piove ti presto l'ombrello» non viene tradita nei giorni in cui non piove. L'unico modo di smentirla è un giorno di pioggia in cui l'ombrello non arriva.</p>
+
+    <h3>La doppia implicazione <span class="mono">\(p \leftrightarrow q\)</span></h3>
+    <p>Si legge «p <strong>se e solo se</strong> q». È vera quando \(p\) e \(q\) hanno lo <strong>stesso</strong> valore di verità. Equivale a \((p\rightarrow q)\land(q\rightarrow p)\).</p>
+
+    <h2>4. Condizione necessaria e sufficiente</h2>
+    <p class="lead">È l'uso dell'implicazione nel linguaggio della matematica. Partiamo da \(p\rightarrow q\) vera:</p>
+    <div class="card">
+      <dl class="inline-def">
+        <dt><span class="badge suff">sufficiente</span></dt>
+        <dd>\(p\) è condizione <strong>sufficiente</strong> per \(q\): <em>basta</em> che valga \(p\) perché valga \(q\). (\(p \Rightarrow q\))</dd>
+        <dt><span class="badge nec">necessaria</span></dt>
+        <dd>\(q\) è condizione <strong>necessaria</strong> per \(p\): senza \(q\) non può valere \(p\). Infatti \(p\rightarrow q\) equivale a \(\lnot q \rightarrow \lnot p\).</dd>
+      </dl>
+    </div>
+    <div class="note">
+      Specchietto: in «\(p\rightarrow q\)», <strong>l'ipotesi è sufficiente, la tesi è necessaria</strong>. Una freccia sola, due letture.
+    </div>
+
+    <h3>Un esempio numerico</h3>
+    <p>Sia \(p\): «\(n\) è divisibile per 4» e \(q\): «\(n\) è divisibile per 2». È vera \(p\rightarrow q\).</p>
+    <ul>
+      <li>Essere divisibile per 4 è <strong>sufficiente</strong> per essere divisibile per 2 (se lo è per 4, lo è di sicuro per 2).</li>
+      <li>Essere divisibile per 2 è <strong>necessario</strong> per essere divisibile per 4 (un numero dispari non potrà mai essere divisibile per 4).</li>
+      <li>Ma non è <em>sufficiente</em>: 6 è divisibile per 2 e non per 4. Quindi non vale \(q\rightarrow p\).</li>
+    </ul>
+
+    <h3>Necessaria <em>e</em> sufficiente: la doppia freccia</h3>
+    <p>Quando valgono <strong>entrambe</strong> \(p\rightarrow q\) e \(q\rightarrow p\), cioè \(p\leftrightarrow q\), si dice che \(p\) è condizione <strong>necessaria e sufficiente</strong> per \(q\) (e viceversa). In matematica è ciò che esprime un «se e solo se»: una definizione, una caratterizzazione.</p>
+    <div class="card card-soft">
+      <p><strong>Esempio:</strong> «un triangolo è equilatero \(\leftrightarrow\) ha i tre angoli uguali». Ciascuna condizione è necessaria e sufficiente per l'altra.</p>
+    </div>
+
+    <h3>Diretta, inversa, contraria, contronominale</h3>
+    <div class="scroll-x"><table class="tt">
+      <tr><th>nome</th><th>forma</th><th>relazione con \(p\rightarrow q\)</th></tr>
+      <tr><td>diretta</td><td class="op">\(p\rightarrow q\)</td><td>—</td></tr>
+      <tr><td>inversa</td><td class="op">\(q\rightarrow p\)</td><td>non equivalente</td></tr>
+      <tr><td>contraria</td><td class="op">\(\lnot p\rightarrow \lnot q\)</td><td>non equivalente</td></tr>
+      <tr><td>contronominale</td><td class="op">\(\lnot q\rightarrow \lnot p\)</td><td class="v">equivalente</td></tr>
+    </table></div>
+    <p>La <strong>contronominale</strong> ha sempre lo stesso valore di verità della diretta: dimostrare «se non \(q\) allora non \(p\)» equivale a dimostrare «se \(p\) allora \(q\)». È la base della dimostrazione per contrapposizione.</p>
+
+    <h3>Tautologie e contraddizioni</h3>
+    <div class="inline-def">
+      <dt>tautologia</dt><dd>proposizione sempre vera, qualunque siano i valori delle componenti (es. \(p\lor\lnot p\)).</dd>
+      <dt>contraddizione</dt><dd>proposizione sempre falsa (es. \(p\land\lnot p\)).</dd>
+    </div>
+    <p class="small">Vai alla <strong>Simulazione</strong> per vedere tutte queste operazioni reagire dal vivo ai valori di \(p\) e \(q\).</p>
+  </section>
+
+  <!-- ================= SIMULAZIONE ================= -->
+  <section class="panel" id="p-sim" role="tabpanel" aria-labelledby="tab-sim">
+    <h2>Esploratore dei connettivi</h2>
+    <p>Imposta il valore di verità di \(p\) e \(q\): tutte le operazioni si aggiornano dal vivo, e la riga corrispondente della tavola di verità si illumina.</p>
+
+    <div class="sim-grid">
+      <div class="card">
+        <div class="toggle-row">
+          <span class="lbl">\(p\) =</span>
+          <div class="seg" role="group" aria-label="Valore di p">
+            <button id="p-V" aria-pressed="true">V</button>
+            <button id="p-F" aria-pressed="false">F</button>
+          </div>
+        </div>
+        <div class="toggle-row">
+          <span class="lbl">\(q\) =</span>
+          <div class="seg" role="group" aria-label="Valore di q">
+            <button id="q-V" aria-pressed="true">V</button>
+            <button id="q-F" aria-pressed="false">F</button>
+          </div>
+        </div>
+        <ul class="result-list" id="resultList"></ul>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:.2rem">Tavola di verità</h3>
+        <div class="scroll-x"><table class="tt" id="simTable">
+          <tr><th>\(p\)</th><th>\(q\)</th><th>\(\lnot p\)</th><th>\(p\land q\)</th><th>\(p\lor q\)</th><th>\(p\veebar q\)</th><th>\(p\!\rightarrow\! q\)</th><th>\(p\!\leftrightarrow\! q\)</th></tr>
+        </table></div>
+        <div class="reason" id="reasonBox"></div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:1.6rem">Necessaria e sufficiente, con gli insiemi</h2>
+    <p>Un'implicazione vera \(p\rightarrow q\) si legge «l'insieme dei casi in cui vale \(p\) è contenuto in quello in cui vale \(q\)». Scegli un esempio:</p>
+    <div class="card">
+      <label for="exSelect" class="small">Esempio di implicazione:</label>
+      <select class="example-select" id="exSelect" aria-label="Scegli un esempio di implicazione"></select>
+      <svg class="venn" id="vennSvg" viewBox="0 0 400 240" role="img" aria-labelledby="vennTitle">
+        <title id="vennTitle">Diagramma insiemistico dell'implicazione</title>
+      </svg>
+      <div class="reason" id="vennReason"></div>
+    </div>
+  </section>
+
+  <!-- ================= PRATICA ================= -->
+  <section class="panel" id="p-pratica" role="tabpanel" aria-labelledby="tab-pratica">
+    <h2>Pratica interattiva</h2>
+    <p>Rispondi, poi controlla. Se sei bloccato chiedi un <strong>aiuto</strong>: i suggerimenti diventano via via più espliciti. Per i valori di verità scrivi <span class="kbd">V</span> o <span class="kbd">F</span> (vanno bene anche «vero/falso», «1/0»).</p>
+    <div id="practiceHost"></div>
+  </section>
+
+  <!-- ================= QUIZ ================= -->
+  <section class="panel" id="p-quiz" role="tabpanel" aria-labelledby="tab-quiz">
+    <h2>Quiz</h2>
+    <p>Una domanda alla volta, con punteggio. Puoi tornare indietro con <strong>Precedente</strong> per rivedere, ma una risposta già data resta bloccata.</p>
+    <div class="card" id="quizHost"></div>
+  </section>
+
+  <p class="footer">Logica delle proposizioni · serie didattica ventilii-gif · costruito per il liceo scientifico</p>
+</div>
+
+<script>
+/* ============================================================
+   Utility
+   ============================================================ */
+function $(sel, root){return (root||document).querySelector(sel);}
+function $all(sel, root){return Array.prototype.slice.call((root||document).querySelectorAll(sel));}
+function VF(b){return b ? 'V' : 'F';}
+
+/* ============================================================
+   Theme toggle
+   ============================================================ */
+(function(){
+  var btn = $('#themeToggle');
+  function current(){
+    var set = document.documentElement.getAttribute('data-theme');
+    if(set) return set;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light';
+  }
+  btn.addEventListener('click', function(){
+    var next = current()==='dark' ? 'light':'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('logica-theme', next); }catch(e){}
+    drawVenn(); // simulation is theme-aware: redraw on theme change
+  });
+})();
+
+/* ============================================================
+   Tabs
+   ============================================================ */
+(function(){
+  var tabs = $all('.tab');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){ select(tab); });
+    tab.addEventListener('keydown', function(e){
+      var i = tabs.indexOf(tab);
+      if(e.key==='ArrowRight'){ e.preventDefault(); tabs[(i+1)%tabs.length].focus(); }
+      if(e.key==='ArrowLeft'){ e.preventDefault(); tabs[(i-1+tabs.length)%tabs.length].focus(); }
+    });
+  });
+  function select(tab){
+    tabs.forEach(function(t){
+      var on = t===tab;
+      t.setAttribute('aria-selected', on?'true':'false');
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      panel.classList.toggle('active', on);
+    });
+  }
+})();
+
+/* ============================================================
+   KaTeX auto-render
+   ============================================================ */
+window.addEventListener('load', function(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {
+      delimiters:[
+        {left:'\\(',right:'\\)',display:false},
+        {left:'\\[',right:'\\]',display:true}
+      ],
+      throwOnError:false
+    });
+  }
+});
+
+/* ============================================================
+   SIMULAZIONE — connective explorer
+   ============================================================ */
+var state = { p:true, q:true };
+
+var OPS = [
+  {name:'\\lnot p',        txt:'non p',               fn:function(p,q){return !p;}},
+  {name:'p \\land q',      txt:'p e q',               fn:function(p,q){return p&&q;}},
+  {name:'p \\lor q',       txt:'p o q (incl.)',       fn:function(p,q){return p||q;}},
+  {name:'p \\veebar q',    txt:'o p o q (escl.)',     fn:function(p,q){return p!==q;}},
+  {name:'p \\rightarrow q',txt:'se p allora q',       fn:function(p,q){return !p||q;}},
+  {name:'p \\leftrightarrow q',txt:'p se e solo se q', fn:function(p,q){return p===q;}},
+  {name:'\\lnot q \\rightarrow \\lnot p', txt:'contronominale', fn:function(p,q){return q|| !p;}}
+];
+
+function renderResults(){
+  var host = $('#resultList');
+  host.innerHTML = '';
+  OPS.forEach(function(op){
+    var val = op.fn(state.p, state.q);
+    var li = document.createElement('li');
+    var left = document.createElement('span');
+    left.className = 'expr';
+    left.innerHTML = '\\('+op.name+'\\) <span class="small">'+op.txt+'</span>';
+    var right = document.createElement('span');
+    right.className = 'val '+(val?'v':'f');
+    right.textContent = VF(val);
+    li.appendChild(left); li.appendChild(right);
+    host.appendChild(li);
+  });
+  if(window.renderMathInElement){
+    renderMathInElement(host,{delimiters:[{left:'\\(',right:'\\)',display:false}],throwOnError:false});
+  }
+}
+
+function buildSimTable(){
+  var tbl = $('#simTable');
+  // remove existing data rows (keep header)
+  $all('tr', tbl).slice(1).forEach(function(r){r.remove();});
+  var rows = [[true,true],[true,false],[false,true],[false,false]];
+  rows.forEach(function(r){
+    var p=r[0], q=r[1];
+    var tr=document.createElement('tr');
+    tr.dataset.p = p?'1':'0';
+    tr.dataset.q = q?'1':'0';
+    var cells = [p, q, !p, p&&q, p||q, (p!==q), (!p||q), (p===q)];
+    cells.forEach(function(v){
+      var td=document.createElement('td');
+      td.className = v?'v':'f';
+      td.textContent = VF(v);
+      tr.appendChild(td);
+    });
+    tbl.appendChild(tr);
+  });
+}
+
+function highlightRow(){
+  $all('#simTable tr').slice(1).forEach(function(tr){
+    var on = (tr.dataset.p===(state.p?'1':'0')) && (tr.dataset.q===(state.q?'1':'0'));
+    tr.style.outline = on ? '3px solid var(--blue-500)' : 'none';
+    tr.style.outlineOffset = '-3px';
+    tr.style.background = on ? 'var(--blue-100)' : '';
+  });
+}
+
+function renderReason(){
+  var p=state.p, q=state.q;
+  var imp = (!p||q);
+  var box = $('#reasonBox');
+  var html = '<strong>Implicazione \\(p\\rightarrow q\\):</strong> con \\(p='+VF(p)+'\\) e \\(q='+VF(q)+'\\) vale <strong>'+VF(imp)+'</strong>. ';
+  if(p && !q){
+    html += 'È l\'unico caso di falsità: l\'ipotesi è vera ma la tesi è falsa, la promessa è smentita.';
+  } else if(!p){
+    html += 'L\'ipotesi è falsa, quindi l\'implicazione è vera «a vuoto»: non c\'è nulla da smentire.';
+  } else {
+    html += 'Ipotesi e tesi entrambe vere: la promessa è mantenuta. Qui \\(p\\) è <span class="badge suff">sufficiente</span> per \\(q\\), e \\(q\\) è <span class="badge nec">necessaria</span> per \\(p\\).';
+  }
+  box.innerHTML = html;
+  if(window.renderMathInElement){
+    renderMathInElement(box,{delimiters:[{left:'\\(',right:'\\)',display:false}],throwOnError:false});
+  }
+}
+
+function setVal(which, value){
+  state[which] = value;
+  $('#'+which+'-V').setAttribute('aria-pressed', value?'true':'false');
+  $('#'+which+'-F').setAttribute('aria-pressed', value?'false':'true');
+  renderResults(); highlightRow(); renderReason();
+}
+
+['p','q'].forEach(function(w){
+  $('#'+w+'-V').addEventListener('click', function(){ setVal(w, true); });
+  $('#'+w+'-F').addEventListener('click', function(){ setVal(w, false); });
+});
+
+/* ---- Venn / insiemi ---- */
+var EXAMPLES = [
+  {
+    p:'è divisibile per 4', q:'è divisibile per 2',
+    note:'Essere divisibile per 4 è <span class="badge suff">sufficiente</span> per essere divisibile per 2; essere divisibile per 2 è <span class="badge nec">necessario</span> ma non sufficiente (6 è pari ma non multiplo di 4).',
+    strict:true
+  },
+  {
+    p:'è un quadrato', q:'è un rettangolo',
+    note:'Ogni quadrato è un rettangolo: essere quadrato è <span class="badge suff">sufficiente</span> per essere rettangolo; essere rettangolo è <span class="badge nec">necessario</span> per essere quadrato, ma non basta.',
+    strict:true
+  },
+  {
+    p:'piove', q:'la strada è bagnata',
+    note:'La pioggia è <span class="badge suff">sufficiente</span> perché la strada sia bagnata; strada bagnata è <span class="badge nec">necessaria</span> ma non sufficiente (può averla bagnata un\'autobotte).',
+    strict:true
+  },
+  {
+    p:'il triangolo è equilatero', q:'il triangolo ha i tre angoli uguali',
+    note:'Qui vale anche l\'inversa: le due condizioni coincidono. Ciascuna è <span class="badge suff">sufficiente</span> e <span class="badge nec">necessaria</span> per l\'altra — una doppia implicazione \\(p\\leftrightarrow q\\).',
+    strict:false
+  }
+];
+
+function buildExampleSelect(){
+  var sel = $('#exSelect');
+  EXAMPLES.forEach(function(ex,i){
+    var o=document.createElement('option');
+    o.value=i;
+    o.textContent = 'p: «'+ex.p+'»  →  q: «'+ex.q+'»';
+    sel.appendChild(o);
+  });
+  sel.addEventListener('change', drawVenn);
+}
+
+function cssVar(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function drawVenn(){
+  var sel = $('#exSelect');
+  var ex = EXAMPLES[sel ? +sel.value : 0];
+  var svg = $('#vennSvg');
+  var blue = cssVar('--true') || '#1d4e89';
+  var amber = cssVar('--false') || '#c9752a';
+  var ink = cssVar('--ink') || '#1f2933';
+  var soft = cssVar('--blue-100') || '#e7f0fa';
+  var card = cssVar('--card') || '#fff';
+
+  var ns='http://www.w3.org/2000/svg';
+  svg.innerHTML='';
+  function el(tag, attrs){
+    var e=document.createElementNS(ns,tag);
+    for(var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  var title = document.createElementNS(ns,'title');
+  title.id='vennTitle'; title.textContent='Diagramma insiemistico dell\'implicazione';
+  svg.appendChild(title);
+
+  if(ex.strict){
+    // Q big circle, P smaller circle inside it (P subset of Q)
+    var Q = el('circle',{cx:220, cy:120, r:95, fill:soft, stroke:amber, 'stroke-width':2.5});
+    var P = el('circle',{cx:180, cy:120, r:48, fill:'none', stroke:blue, 'stroke-width':2.5});
+    svg.appendChild(Q); svg.appendChild(P);
+    svg.appendChild(el('text',{x:285,y:60,fill:amber,'font-family':'JetBrains Mono, monospace','font-size':16,'text-anchor':'middle'})).textContent='Q';
+    svg.appendChild(el('text',{x:180,y:124,fill:blue,'font-family':'JetBrains Mono, monospace','font-size':16,'text-anchor':'middle'})).textContent='P';
+    var cap = el('text',{x:200,y:228,fill:ink,'font-size':12,'text-anchor':'middle','font-family':'system-ui, sans-serif'});
+    cap.textContent = 'P ⊆ Q  ·  p → q  (ma non q → p)';
+    svg.appendChild(cap);
+  } else {
+    // P = Q : two coincident circles -> draw as one with both labels
+    var C = el('circle',{cx:200, cy:115, r:85, fill:soft, stroke:blue, 'stroke-width':2.5});
+    svg.appendChild(C);
+    var C2 = el('circle',{cx:200, cy:115, r:85, fill:'none', stroke:amber, 'stroke-width':2.5, 'stroke-dasharray':'6 6'});
+    svg.appendChild(C2);
+    svg.appendChild(el('text',{x:200,y:118,fill:ink,'font-family':'JetBrains Mono, monospace','font-size':16,'text-anchor':'middle'})).textContent='P = Q';
+    var cap2 = el('text',{x:200,y:228,fill:ink,'font-size':12,'text-anchor':'middle','font-family':'system-ui, sans-serif'});
+    cap2.textContent = 'p ↔ q  ·  necessaria e sufficiente';
+    svg.appendChild(cap2);
+  }
+  $('#vennReason').innerHTML = ex.note;
+  if(window.renderMathInElement){
+    renderMathInElement($('#vennReason'),{delimiters:[{left:'\\(',right:'\\)',display:false}],throwOnError:false});
+  }
+}
+
+/* ============================================================
+   PRATICA — exercises with tolerance + progressive hints
+   ============================================================ */
+function norm(s){
+  return (s||'').toString().trim().toLowerCase()
+    .replace(/[.\s]/g,'')
+    .replace(/à/g,'a').replace(/è/g,'e').replace(/é/g,'e');
+}
+// accepted forms for a truth value
+function matchesVF(input, wantTrue){
+  var n = norm(input);
+  var yes = ['v','vero','vera','true','1','si'];
+  var no  = ['f','falso','falsa','false','0','no'];
+  if(wantTrue) return yes.indexOf(n)>=0;
+  return no.indexOf(n)>=0;
+}
+
+var PRACTICE = [
+  {
+    q:'Dati \\(p=\\)V e \\(q=\\)F, quanto vale \\(p\\rightarrow q\\)? (scrivi V o F)',
+    check:function(v){ return matchesVF(v, false); },
+    hints:[
+      'Ricorda in quale unico caso l\'implicazione è falsa.',
+      'L\'ipotesi \\(p\\) è vera e la tesi \\(q\\) è falsa…',
+      'È proprio l\'unico caso di falsità: la risposta è F.'
+    ],
+    sol:'F — ipotesi vera, tesi falsa: l\'implicazione è falsa.'
+  },
+  {
+    q:'Dati \\(p=\\)F e \\(q=\\)F, quanto vale \\(p\\rightarrow q\\)? (V o F)',
+    check:function(v){ return matchesVF(v, true); },
+    hints:[
+      'Che cosa succede quando l\'ipotesi è falsa?',
+      'Con ipotesi falsa l\'implicazione è vera «a vuoto».',
+      'La risposta è V.'
+    ],
+    sol:'V — con ipotesi falsa l\'implicazione è sempre vera.'
+  },
+  {
+    q:'\\(p\\): «un numero è divisibile per 6»;  \\(q\\): «è divisibile per 3». L\'implicazione \\(p\\rightarrow q\\) è vera. Allora essere divisibile per 3 è condizione… (scrivi: necessaria, sufficiente, oppure entrambe)',
+    check:function(v){ var n=norm(v); return n==='necessaria'||n==='necessario'; },
+    hints:[
+      'In \\(p\\rightarrow q\\), la tesi \\(q\\) che ruolo ha?',
+      'La tesi è la condizione necessaria; verifica se è anche sufficiente (9 è divisibile per 3 ma per 6?).',
+      '9 è divisibile per 3 ma non per 6: non è sufficiente. Risposta: necessaria.'
+    ],
+    sol:'Necessaria (ma non sufficiente): \\(q\\) è la tesi e l\'inversa \\(q\\rightarrow p\\) è falsa.'
+  },
+  {
+    q:'Stesso caso (\\(p\\): div. per 6; \\(q\\): div. per 3). Essere divisibile per 6 è condizione… per essere divisibile per 3? (necessaria / sufficiente / entrambe)',
+    check:function(v){ var n=norm(v); return n==='sufficiente'; },
+    hints:[
+      'Ora guardiamo il ruolo dell\'ipotesi \\(p\\).',
+      'L\'ipotesi in \\(p\\rightarrow q\\) è la condizione sufficiente.',
+      'Risposta: sufficiente.'
+    ],
+    sol:'Sufficiente: se un numero è divisibile per 6 allora di sicuro lo è per 3.'
+  },
+  {
+    q:'Quanto vale la proposizione \\((p\\land \\lnot p)\\)? Cioè: è una tautologia o una contraddizione? (scrivi: tautologia o contraddizione)',
+    check:function(v){ var n=norm(v); return n==='contraddizione'||n==='contraddizione'||n.indexOf('contraddiz')===0; },
+    hints:[
+      'Può \\(p\\) essere vera e falsa nello stesso momento?',
+      '\\(p\\) e \\(\\lnot p\\) non possono essere vere insieme: la congiunzione è sempre falsa.',
+      'Sempre falsa = contraddizione.'
+    ],
+    sol:'Contraddizione: \\(p\\land\\lnot p\\) è falsa per ogni valore di \\(p\\).'
+  },
+  {
+    q:'La contronominale di «se piove, la strada è bagnata» è: «se la strada non è bagnata, allora…». Completa con una sola parola: non ____ ',
+    check:function(v){ var n=norm(v); return n==='piove'; },
+    hints:[
+      'La contronominale di \\(p\\rightarrow q\\) è \\(\\lnot q\\rightarrow\\lnot p\\).',
+      'Qui \\(p\\)=«piove». Devi negare l\'ipotesi.',
+      'Risposta: «non piove».'
+    ],
+    sol:'«…allora non piove». Contronominale: \\(\\lnot q\\rightarrow\\lnot p\\), equivalente alla diretta.'
+  }
+];
+
+function buildPractice(){
+  var host = $('#practiceHost');
+  PRACTICE.forEach(function(ex, idx){
+    var hintIdx = {n:0};
+    var card = document.createElement('div');
+    card.className='card exercise';
+    card.innerHTML =
+      '<div class="q"><strong>Esercizio '+(idx+1)+'.</strong> '+ex.q+'</div>'+
+      '<div class="ans-row">'+
+        '<input class="answer" type="text" aria-label="La tua risposta" autocomplete="off">'+
+        '<button class="btn primary" data-act="check">Controlla</button>'+
+        '<button class="btn ghost" data-act="hint">Aiuto</button>'+
+      '</div>'+
+      '<div class="hint"></div>'+
+      '<div class="feedback"></div>';
+    host.appendChild(card);
+
+    var input = $('.answer', card);
+    var fb = $('.feedback', card);
+    var hintBox = $('.hint', card);
+
+    function doCheck(){
+      var ok = ex.check(input.value);
+      fb.className = 'feedback show '+(ok?'ok':'no');
+      if(ok){
+        fb.innerHTML = '<span class="ico icon-ok"></span> Corretto. '+ex.sol;
+      }else{
+        fb.innerHTML = '<span class="ico icon-no"></span> Non ancora. Riprova o chiedi un aiuto.';
+      }
+      if(window.renderMathInElement){ renderMathInElement(fb,{delimiters:[{left:'\\(',right:'\\)',display:false}],throwOnError:false}); }
+    }
+    function doHint(){
+      var h = ex.hints[Math.min(hintIdx.n, ex.hints.length-1)];
+      hintBox.className='hint show';
+      hintBox.innerHTML = '<strong>Aiuto '+(Math.min(hintIdx.n+1, ex.hints.length))+':</strong> '+h;
+      if(window.renderMathInElement){ renderMathInElement(hintBox,{delimiters:[{left:'\\(',right:'\\)',display:false}],throwOnError:false}); }
+      if(hintIdx.n < ex.hints.length-1) hintIdx.n++;
+    }
+    $('[data-act=check]', card).addEventListener('click', doCheck);
+    $('[data-act=hint]', card).addEventListener('click', doHint);
+    input.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); doCheck(); } });
+  });
+}
+
+/* ============================================================
+   QUIZ — one question at a time, locked after answering
+   ============================================================ */
+var QUIZ = [
+  {
+    q:'Quale delle seguenti frasi è una proposizione logica?',
+    options:['Che ora è?','Chiudi la finestra.','Il numero 12 è pari.','x + 3 = 7'],
+    correct:2,
+    exp:['È una domanda, non ha valore di verità.','È un comando, non ha valore di verità.','Giusto: è dichiarativa ed è vera.','Dipende da x: è un predicato, non una proposizione.']
+  },
+  {
+    q:'La congiunzione \\(p\\land q\\) è vera…',
+    options:['quando almeno una tra p e q è vera','solo quando p e q sono entrambe vere','solo quando p e q sono entrambe false','quando p e q hanno valori diversi'],
+    correct:1,
+    exp:['Quella è la disgiunzione inclusiva.','Esatto: la «e» richiede entrambe vere.','Quella sarebbe falsa in quel caso.','Quella descrive la disgiunzione esclusiva.']
+  },
+  {
+    q:'L\'implicazione \\(p\\rightarrow q\\) è FALSA…',
+    options:['quando p è falsa e q è vera','quando p e q sono entrambe false','solo quando p è vera e q è falsa','quando p e q sono entrambe vere'],
+    correct:2,
+    exp:['No: con p falsa è vera «a vuoto».','No: con p falsa è vera.','Esatto: è l\'unico caso di falsità.','No: con entrambe vere la promessa è mantenuta.']
+  },
+  {
+    q:'In «\\(p\\rightarrow q\\)», che ruolo ha l\'ipotesi \\(p\\) rispetto a \\(q\\)?',
+    options:['condizione sufficiente','condizione necessaria','né necessaria né sufficiente','condizione impossibile'],
+    correct:0,
+    exp:['Esatto: basta p perché valga q.','La necessaria è q, non p.','p è davvero sufficiente.','Non ha senso qui.']
+  },
+  {
+    q:'In «\\(p\\rightarrow q\\)», la tesi \\(q\\) è per \\(p\\) una condizione…',
+    options:['sufficiente','impossibile','sempre falsa','necessaria'],
+    correct:3,
+    exp:['No: la sufficiente è p.','No.','No.','Esatto: senza q non può valere p (\\(\\lnot q\\rightarrow\\lnot p\\)).']
+  },
+  {
+    q:'Quale implicazione è SEMPRE equivalente a \\(p\\rightarrow q\\)?',
+    options:['l\'inversa \\(q\\rightarrow p\\)','la contronominale \\(\\lnot q\\rightarrow\\lnot p\\)','la contraria \\(\\lnot p\\rightarrow\\lnot q\\)','la negazione \\(\\lnot(p\\rightarrow q)\\)'],
+    correct:1,
+    exp:['L\'inversa non è equivalente.','Esatto: diretta e contronominale hanno sempre lo stesso valore.','La contraria non è equivalente.','La negazione è il contrario, non equivalente.']
+  },
+  {
+    q:'«\\(n\\) multiplo di 10 \\(\\rightarrow\\) \\(n\\) multiplo di 5». Essere multiplo di 5 è condizione…',
+    options:['necessaria ma non sufficiente','sufficiente ma non necessaria','necessaria e sufficiente','né necessaria né sufficiente'],
+    correct:0,
+    exp:['Esatto: serve (è la tesi) ma non basta — 15 è multiplo di 5, non di 10.','No: la sufficiente qui è «multiplo di 10».','Non vale l\'inversa, quindi non entrambe.','È almeno necessaria.']
+  },
+  {
+    q:'Quando si dice che \\(p\\) è condizione necessaria E sufficiente per \\(q\\)?',
+    options:['quando vale solo \\(p\\rightarrow q\\)','quando vale solo \\(q\\rightarrow p\\)','quando p e q sono entrambe false','quando vale \\(p\\leftrightarrow q\\)'],
+    correct:3,
+    exp:['Solo quello dà la sola sufficienza.','Solo quello dà la sola necessità.','Non c\'entra con i valori specifici.','Esatto: la doppia implicazione, cioè entrambe le frecce.']
+  },
+  {
+    q:'La proposizione \\(p\\lor\\lnot p\\) è…',
+    options:['una contraddizione','vera solo se p è vera','una tautologia','falsa solo se p è falsa'],
+    correct:2,
+    exp:['No, non è mai falsa.','No: è vera in ogni caso.','Esatto: sempre vera (principio del terzo escluso).','No: è vera anche se p è falsa.']
+  },
+  {
+    q:'La disgiunzione esclusiva \\(p\\veebar q\\) («o p o q») è vera quando…',
+    options:['p e q sono entrambe vere','esattamente una tra p e q è vera','p e q sono entrambe false','p e q hanno lo stesso valore'],
+    correct:1,
+    exp:['No: con entrambe vere l\'aut…aut è falsa.','Esatto: una sola delle due.','No: sarebbe falsa.','No: con valori uguali è falsa.']
+  }
+];
+
+(function verifyDistribution(){
+  // dev-time sanity: spread of correct indices (not shown to user)
+  var counts=[0,0,0,0];
+  QUIZ.forEach(function(it){counts[it.correct]++;});
+  // counts ~ even; left here intentionally for maintainers via console
+  if(window.console && console.debug) console.debug('quiz correct-index distribution', counts);
+})();
+
+var quizState = { i:0, answers:[], score:0 };
+QUIZ.forEach(function(){ quizState.answers.push(null); }); // null = unanswered, else chosen index
+
+function renderQuiz(){
+  var host = $('#quizHost');
+  var i = quizState.i;
+  var total = QUIZ.length;
+
+  if(i >= total){
+    host.innerHTML =
+      '<div class="quiz-done">'+
+        '<div class="small">Quiz completato</div>'+
+        '<div class="score">'+quizState.score+' / '+total+'</div>'+
+        '<p>'+scoreMsg(quizState.score,total)+'</p>'+
+        '<button class="btn ghost" id="quizRestart">Ricomincia</button>'+
+      '</div>';
+    $('#quizRestart').addEventListener('click', function(){
+      quizState = { i:0, answers:[], score:0 };
+      QUIZ.forEach(function(){ quizState.answers.push(null); });
+      renderQuiz();
+    });
+    return;
+  }
+
+  var item = QUIZ[i];
+  var chosen = quizState.answers[i];
+  var answered = chosen !== null;
+
+  var optsHtml = item.options.map(function(opt, k){
+    var cls='quiz-opt';
+    if(answered){
+      if(k===item.correct) cls+=' correct';
+      else if(k===chosen) cls+=' wrong';
+    }
+    var mark = String.fromCharCode(65+k);
+    var icon='';
+    if(answered && k===item.correct) icon='<span class="icon-ok" aria-hidden="true" style="margin-left:auto"></span>';
+    else if(answered && k===chosen) icon='<span class="icon-no" aria-hidden="true" style="margin-left:auto"></span>';
+    return '<button class="'+cls+'" data-k="'+k+'" '+(answered?'disabled':'')+'>'+
+             '<span class="mk">'+mark+'</span><span>'+opt+'</span>'+icon+
+           '</button>';
+  }).join('');
+
+  var expHtml='';
+  if(answered){
+    var right = chosen===item.correct;
+    expHtml = '<div class="quiz-exp show">'+
+      '<strong>'+(right?'Corretto.':'Risposta corretta: '+String.fromCharCode(65+item.correct)+'.')+'</strong> '+
+      item.exp[item.correct]+
+      (right?'':' <br><span class="small">La tua scelta: '+item.exp[chosen]+'</span>')+
+      '</div>';
+  }
+
+  host.innerHTML =
+    '<div class="quiz-meta"><span>Domanda '+(i+1)+' di '+total+'</span><span>Punteggio: '+quizState.score+'</span></div>'+
+    '<div class="quiz-q">'+item.q+'</div>'+
+    '<div class="quiz-opts">'+optsHtml+'</div>'+
+    expHtml+
+    '<div class="quiz-nav">'+
+      '<button class="btn ghost" id="quizPrev" '+(i===0?'disabled':'')+'>Precedente</button>'+
+      '<button class="btn primary" id="quizNext" '+(answered?'':'disabled')+'>'+(i===total-1?'Vedi risultato':'Successiva')+'</button>'+
+    '</div>';
+
+  $all('.quiz-opt', host).forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(quizState.answers[i]!==null) return;         // locked
+      var k = +btn.dataset.k;
+      quizState.answers[i] = k;
+      if(k===item.correct) quizState.score++;          // score only on first answer
+      renderQuiz();
+    });
+  });
+  var prev=$('#quizPrev'), next=$('#quizNext');
+  if(prev) prev.addEventListener('click', function(){ if(quizState.i>0){ quizState.i--; renderQuiz(); } });
+  if(next) next.addEventListener('click', function(){ quizState.i++; renderQuiz(); });
+
+  if(window.renderMathInElement){
+    renderMathInElement(host,{delimiters:[{left:'\\(',right:'\\)',display:false}],throwOnError:false});
+  }
+}
+
+function scoreMsg(s,t){
+  var r=s/t;
+  if(r===1) return 'Perfetto: hai padroneggiato proposizioni, implicazione e condizioni.';
+  if(r>=0.7) return 'Molto bene. Rivedi i punti sbagliati nella Teoria.';
+  if(r>=0.4) return 'Buon inizio: ripassa l\'implicazione e la coppia necessaria/sufficiente.';
+  return 'Riprova dopo aver riletto la Teoria: parti dalle tavole di verità.';
+}
+
+/* ============================================================
+   Init
+   ============================================================ */
+buildSimTable();
+renderResults();
+highlightRow();
+renderReason();
+buildExampleSelect();
+drawVenn();
+buildPractice();
+renderQuiz();
+</script>
+</body>
+</html>
