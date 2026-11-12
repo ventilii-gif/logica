@@ -219,6 +219,10 @@ table.tt .op{background:var(--blue-100)}
 
 svg.venn{width:100%;height:auto;display:block;background:var(--card);border-radius:10px}
 .example-select{width:100%;padding:.55rem .6rem;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-family:var(--sans);font-size:.95rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 .2rem}
+.chip{font-family:var(--mono);font-weight:600;min-width:2.5rem;text-align:center;padding:.5rem .55rem;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--muted)}
+.chip.on{background:var(--true);color:#fff;border-color:var(--true)}
+.chip .tag{display:block;font-size:.6rem;font-weight:400;margin-top:.15rem;letter-spacing:.02em}
 
 /* Practice */
 .exercise{margin:1.1rem 0}
@@ -399,7 +403,51 @@ button.btn:focus-visible,.tab:focus-visible,.seg button:focus-visible,.theme-tog
       <dt>tautologia</dt><dd>proposizione sempre vera, qualunque siano i valori delle componenti (es. \(p\lor\lnot p\)).</dd>
       <dt>contraddizione</dt><dd>proposizione sempre falsa (es. \(p\land\lnot p\)).</dd>
     </div>
-    <p class="small">Vai alla <strong>Simulazione</strong> per vedere tutte queste operazioni reagire dal vivo ai valori di \(p\) e \(q\).</p>
+    <h2>5. Logica dei predicati e quantificatori</h2>
+    <p class="lead">Finora ogni proposizione aveva un valore di verità fisso. Ma «\(x\) è pari» non è vera né falsa finché non si sa chi è \(x\): è un <strong>predicato</strong> (o enunciato aperto), che indichiamo \(P(x)\). Diventa una proposizione in due modi: fissando \(x\), oppure <strong>quantificando</strong> la variabile.</p>
+    <div class="card card-soft">
+      <p>Un predicato vive su un <strong>dominio</strong> (l'insieme dei valori ammessi per \(x\)). L'<strong>insieme di verità</strong> di \(P\) è l'insieme degli \(x\) del dominio per cui \(P(x)\) è vera. Es. per \(P(x):\;x>3\) sul dominio \(\{1,2,3,4,5,6\}\) l'insieme di verità è \(\{4,5,6\}\).</p>
+    </div>
+
+    <h3>I due quantificatori</h3>
+    <div class="card">
+      <dl class="inline-def">
+        <dt>\(\forall x\, P(x)\)</dt>
+        <dd><strong>quantificatore universale</strong> — «per ogni \(x\), \(P(x)\)». Vera se \(P(x)\) è vera per <em>tutti</em> gli \(x\) del dominio. Per renderla falsa basta <strong>un solo controesempio</strong>.</dd>
+        <dt>\(\exists x\, P(x)\)</dt>
+        <dd><strong>quantificatore esistenziale</strong> — «esiste (almeno un) \(x\) tale che \(P(x)\)». Vera se \(P(x)\) è vera per <em>almeno</em> un \(x\). Basta un <strong>testimone</strong> per renderla vera.</dd>
+        <dt>\(\exists!\, x\, P(x)\)</dt>
+        <dd>«esiste un <strong>unico</strong> \(x\) tale che \(P(x)\)»: vera se l'insieme di verità ha esattamente un elemento.</dd>
+      </dl>
+    </div>
+    <div class="note">
+      Per <strong>dimostrare falsa</strong> un'affermazione universale basta un controesempio; per dimostrarla vera bisogna invece provarla per ogni \(x\). Al contrario, per un'esistenziale basta esibire un testimone.
+    </div>
+
+    <h3>Negazione dei quantificatori</h3>
+    <p>Negare uno «per ogni» dà un «esiste», e viceversa (sono le leggi di De Morgan generalizzate):</p>
+    <p>\[\lnot\big(\forall x\, P(x)\big)\;\equiv\;\exists x\,\lnot P(x) \qquad\qquad \lnot\big(\exists x\, P(x)\big)\;\equiv\;\forall x\,\lnot P(x)\]</p>
+    <div class="card card-soft">
+      <p>«Non è vero che <em>tutti</em> gli studenti hanno superato» significa «<em>esiste almeno uno</em> studente che non ha superato». E «non esiste un numero pari maggiore di 100» significa «ogni numero pari è \(\le 100\)».</p>
+    </div>
+
+    <h3>Quantificatori annidati: l'ordine conta</h3>
+    <p>Quando compaiono due quantificatori diversi, scambiarli può cambiare il significato e il valore di verità. Sul dominio dei numeri reali:</p>
+    <div class="scroll-x"><table class="tt">
+      <tr><th>enunciato</th><th>significato</th><th>valore</th></tr>
+      <tr><td class="op">\(\forall x\,\exists y\,(y>x)\)</td><td>per ogni numero esiste uno più grande</td><td class="v">V</td></tr>
+      <tr><td class="op">\(\exists y\,\forall x\,(y>x)\)</td><td>esiste un numero più grande di tutti</td><td class="f">F</td></tr>
+    </table></div>
+    <p>Stesso predicato, quantificatori scambiati, verità opposte: «\(\forall\exists\)» non equivale a «\(\exists\forall\)».</p>
+
+    <h3>Legame con l'implicazione e la condizione necessaria/sufficiente</h3>
+    <p>Moltissimi teoremi hanno la forma di un'implicazione universale:</p>
+    <p>\[\forall x\,\big(P(x)\rightarrow Q(x)\big)\]</p>
+    <p>«per ogni \(x\), se \(P(x)\) allora \(Q(x)\)». Qui \(P\) è <span class="badge suff">sufficiente</span> per \(Q\) e \(Q\) è <span class="badge nec">necessaria</span> per \(P\), su tutto il dominio. La sua negazione è \(\exists x\,\big(P(x)\land\lnot Q(x)\big)\): un controesempio in cui l'ipotesi vale ma la tesi no — esattamente l'unico caso di falsità dell'implicazione. E la contronominale diventa \(\forall x\,\big(\lnot Q(x)\rightarrow\lnot P(x)\big)\).</p>
+    <div class="card card-soft">
+      <p><strong>Esempio.</strong> «\(\forall n\;(n\text{ divisibile per }4 \rightarrow n\text{ pari})\)» è vera. La sua negazione sarebbe «\(\exists n\) divisibile per 4 e dispari», che non esiste: nessun controesempio, quindi il teorema regge.</p>
+    </div>
+    <p class="small">Vai alla <strong>Simulazione</strong> per far reagire dal vivo connettivi e quantificatori ai valori e al dominio.</p>
   </section>
 
   <!-- ================= SIMULAZIONE ================= -->
@@ -444,6 +492,16 @@ button.btn:focus-visible,.tab:focus-visible,.seg button:focus-visible,.theme-tog
         <title id="vennTitle">Diagramma insiemistico dell'implicazione</title>
       </svg>
       <div class="reason" id="vennReason"></div>
+    </div>
+
+    <h2 style="margin-top:1.6rem">Quantificatori su un dominio</h2>
+    <p>Dominio \(D=\{1,2,3,4,5,6\}\). Scegli un predicato \(P(x)\): si illuminano gli \(x\) che lo rendono vero, e si calcolano i quantificatori con il relativo testimone o controesempio.</p>
+    <div class="card">
+      <label for="predSelect" class="small">Predicato \(P(x)\):</label>
+      <select class="example-select" id="predSelect" aria-label="Scegli un predicato"></select>
+      <div class="chips" id="predChips"></div>
+      <ul class="result-list" id="predResults"></ul>
+      <div class="reason" id="predReason"></div>
     </div>
   </section>
 
@@ -710,6 +768,82 @@ function drawVenn(){
   }
 }
 
+/* ---- Quantificatori su un dominio finito ---- */
+var DOMAIN = [1,2,3,4,5,6];
+var PREDS = [
+  {name:'x è pari',                  tag:'x pari',    fn:function(x){return x%2===0;}},
+  {name:'x è dispari',               tag:'x dispari', fn:function(x){return x%2===1;}},
+  {name:'x > 3',                     tag:'x>3',       fn:function(x){return x>3;}},
+  {name:'x è primo',                 tag:'x primo',   fn:function(x){return [2,3,5].indexOf(x)>=0;}},
+  {name:'x è multiplo di 3',         tag:'3|x',       fn:function(x){return x%3===0;}},
+  {name:'x ≤ 6  (sempre vero in D)', tag:'x≤6',       fn:function(x){return x<=6;}},
+  {name:'x > 6  (mai vero in D)',    tag:'x>6',       fn:function(x){return x>6;}}
+];
+
+function buildPredSelect(){
+  var sel = $('#predSelect');
+  if(!sel) return;
+  PREDS.forEach(function(p,i){
+    var o=document.createElement('option'); o.value=i; o.textContent=p.name; sel.appendChild(o);
+  });
+  sel.addEventListener('change', drawPredSim);
+}
+
+function drawPredSim(){
+  var sel = $('#predSelect'); if(!sel) return;
+  var p = PREDS[+sel.value];
+  var sat = DOMAIN.filter(p.fn);
+  var all = sat.length===DOMAIN.length;
+  var some = sat.length>0;
+  var uniq = sat.length===1;
+
+  // chips
+  var chips = $('#predChips'); chips.innerHTML='';
+  DOMAIN.forEach(function(x){
+    var on = p.fn(x);
+    var c=document.createElement('span');
+    c.className='chip'+(on?' on':'');
+    c.innerHTML = x+'<span class="tag">P '+(on?'V':'F')+'</span>';
+    chips.appendChild(c);
+  });
+
+  // quantifier results
+  var rows = [
+    {name:'\\forall x\\,P(x)',        txt:'per ogni x',          val:all},
+    {name:'\\exists x\\,P(x)',        txt:'esiste almeno un x',  val:some},
+    {name:'\\exists!\\,x\\,P(x)',     txt:'esiste un unico x',   val:uniq},
+    {name:'\\lnot\\forall x\\,P(x)',  txt:'= ∃x ¬P(x)',          val:!all},
+    {name:'\\lnot\\exists x\\,P(x)',  txt:'= ∀x ¬P(x)',          val:!some}
+  ];
+  var host = $('#predResults'); host.innerHTML='';
+  rows.forEach(function(r){
+    var li=document.createElement('li');
+    var left=document.createElement('span'); left.className='expr';
+    left.innerHTML='\\('+r.name+'\\) <span class="small">'+r.txt+'</span>';
+    var right=document.createElement('span'); right.className='val '+(r.val?'v':'f'); right.textContent=VF(r.val);
+    li.appendChild(left); li.appendChild(right); host.appendChild(li);
+  });
+  if(window.renderMathInElement){
+    renderMathInElement(host,{delimiters:[{left:'\\(',right:'\\)',display:false}],throwOnError:false});
+  }
+
+  // reason: witness / counterexample
+  var msg;
+  var vero = DOMAIN.filter(p.fn);
+  var falso = DOMAIN.filter(function(x){return !p.fn(x);});
+  if(all){
+    msg = 'Insieme di verità \\(=\\{'+vero.join(',')+'\\}=D\\): nessun controesempio, quindi \\(\\forall x\\,P(x)\\) è <strong>vera</strong>.';
+  } else if(!some){
+    msg = 'Insieme di verità vuoto: \\(\\exists x\\,P(x)\\) è <strong>falsa</strong>, e la sua negazione \\(\\forall x\\,\\lnot P(x)\\) è vera.';
+  } else {
+    msg = 'Insieme di verità \\(=\\{'+vero.join(',')+'\\}\\). Testimone per \\(\\exists\\): \\(x='+vero[0]+'\\). Controesempio per \\(\\forall\\): \\(x='+falso[0]+'\\) (rende \\(P\\) falsa), quindi \\(\\forall x\\,P(x)\\) è falsa.';
+  }
+  var rb=$('#predReason'); rb.innerHTML=msg;
+  if(window.renderMathInElement){
+    renderMathInElement(rb,{delimiters:[{left:'\\(',right:'\\)',display:false}],throwOnError:false});
+  }
+}
+
 /* ============================================================
    PRATICA — exercises with tolerance + progressive hints
    ============================================================ */
@@ -787,6 +921,36 @@ var PRACTICE = [
       'Risposta: «non piove».'
     ],
     sol:'«…allora non piove». Contronominale: \\(\\lnot q\\rightarrow\\lnot p\\), equivalente alla diretta.'
+  },
+  {
+    q:'Dominio \\(D=\\{1,2,3,4,5,6\\}\\). L\'enunciato \\(\\exists x\\,(x\\text{ primo e } x>4)\\) è vero? (V/F)',
+    check:function(v){ return matchesVF(v, true); },
+    hints:[
+      'Per un \\(\\exists\\) basta trovare un testimone: un x primo e maggiore di 4.',
+      'Nel dominio i primi sono 2, 3, 5. Qualcuno supera 4?',
+      '5 è primo e 5>4: il testimone esiste, quindi V.'
+    ],
+    sol:'V — testimone \\(x=5\\) (primo e maggiore di 4).'
+  },
+  {
+    q:'Dominio \\(D=\\{1,2,3,4,5,6\\}\\). L\'enunciato \\(\\forall x\\,(x<6)\\) è vero? (V/F)',
+    check:function(v){ return matchesVF(v, false); },
+    hints:[
+      'Per rendere falso un «per ogni» basta un controesempio.',
+      'C\'è un elemento del dominio che non è minore di 6?',
+      '\\(x=6\\) non è \\(<6\\): è un controesempio, quindi F.'
+    ],
+    sol:'F — controesempio \\(x=6\\) (non è minore di 6).'
+  },
+  {
+    q:'Negando \\(\\forall x\\,P(x)\\) si ottiene «\\(\\square\\,x\\;\\lnot P(x)\\)»: quale quantificatore va al posto di \\(\\square\\)? (scrivi «esiste» oppure ∃)',
+    check:function(v){ var n=norm(v); return n==='esiste'||n==='∃'||n==='esistenziale'||n==='esisteunx'; },
+    hints:[
+      'La negazione scambia i due quantificatori fra loro.',
+      'Il «per ogni» negato diventa un «esiste».',
+      'Risposta: esiste (∃), perché \\(\\lnot\\forall x\\,P(x)\\equiv\\exists x\\,\\lnot P(x)\\).'
+    ],
+    sol:'Esiste (∃): \\(\\lnot\\forall x\\,P(x)\\equiv\\exists x\\,\\lnot P(x)\\).'
   }
 ];
 
@@ -897,6 +1061,30 @@ var QUIZ = [
     options:['p e q sono entrambe vere','esattamente una tra p e q è vera','p e q sono entrambe false','p e q hanno lo stesso valore'],
     correct:1,
     exp:['No: con entrambe vere l\'aut…aut è falsa.','Esatto: una sola delle due.','No: sarebbe falsa.','No: con valori uguali è falsa.']
+  },
+  {
+    q:'Che cos\'è un predicato come \\(P(x):\\;x\\text{ è pari}\\)?',
+    options:['Una proposizione sempre vera','Un enunciato aperto: ha un valore di verità solo fissando x o quantificandolo','Una contraddizione','Un connettivo logico'],
+    correct:1,
+    exp:['No: non ha valore finché x non è fissato.','Esatto: diventa proposizione fissando x oppure con un quantificatore.','No, non è sempre falso.','No: dipende da x, non collega proposizioni.']
+  },
+  {
+    q:'La negazione di \\(\\forall x\\,P(x)\\) è…',
+    options:['\\(\\exists x\\,\\lnot P(x)\\)','\\(\\forall x\\,\\lnot P(x)\\)','\\(\\exists x\\,P(x)\\)','\\(\\forall x\\,P(x)\\)'],
+    correct:0,
+    exp:['Esatto: «non per ogni» equivale a «esiste un controesempio».','No: quella è la negazione di \\(\\exists x\\,P(x)\\).','No: hai dimenticato di negare P.','No: è l\'enunciato di partenza.']
+  },
+  {
+    q:'La scrittura \\(\\exists!\\,x\\,P(x)\\) significa che…',
+    options:['P(x) è vera per ogni x','P(x) è falsa per ogni x','esiste almeno un x con P(x)','esiste esattamente un x con P(x)'],
+    correct:3,
+    exp:['No, quello è \\(\\forall x\\,P(x)\\).','No.','Quasi: ma \\(\\exists!\\) richiede anche l\'unicità, non solo l\'esistenza.','Esatto: l\'insieme di verità ha un solo elemento.']
+  },
+  {
+    q:'Sui reali \\(\\forall x\\,\\exists y\\,(y>x)\\) è vera, ma \\(\\exists y\\,\\forall x\\,(y>x)\\) è falsa. Questo mostra che…',
+    options:['i due quantificatori si possono sempre scambiare','\\(\\exists\\) e \\(\\forall\\) significano la stessa cosa','l\'ordine dei quantificatori può cambiare il valore di verità','entrambi gli enunciati sono falsi'],
+    correct:2,
+    exp:['No: proprio qui lo scambio cambia tutto.','No, sono quantificatori opposti.','Esatto: «per ogni…esiste» non equivale a «esiste…per ogni».','No: il primo enunciato è vero.']
   }
 ];
 
@@ -1006,6 +1194,8 @@ highlightRow();
 renderReason();
 buildExampleSelect();
 drawVenn();
+buildPredSelect();
+drawPredSim();
 buildPractice();
 renderQuiz();
 </script>
